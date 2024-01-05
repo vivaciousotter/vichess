@@ -150,9 +150,9 @@ private:
 class Board {
 public:
   static int index(int rank, int file) { return file + rank * 8; }
+  ~Board() { delete this->sheet; }
   Board() {
-    this->sheet =
-        std::make_unique<Spritesheet>(Spritesheet("./assets/spritesheet.png"));
+    this->sheet = new Spritesheet("./assets/spritesheet.png");
     int bw = -1;
     for (int rank = 0; rank < 8; rank++) {
       for (int file = 0; file < 8; file++) {
@@ -240,15 +240,19 @@ public:
   void draw() {
     for (int i = 0; i < 64; i++) {
       this->b[i].draw();
-      int posX = this->b[i].file * Square::size;
-      int posY = this->b[i].rank * Square::size;
-      this->sheet->draw(this->b[i].piece, posX, posY);
+      if (b[i].piece.getFlags() != Piece::None) {
+        Vector2 loc;
+        loc.x = this->b[i].file * Square::size;
+        loc.y = this->b[i].rank * Square::size;
+        Sprite s = Sprite(this->sheet, loc, this->b[i].piece);
+        s.draw();
+      }
     }
   }
 
 private:
   Square b[64];
-  std::unique_ptr<Spritesheet> sheet;
+  Spritesheet *sheet;
   Position p;
 };
 
