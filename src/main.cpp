@@ -1,7 +1,8 @@
+#include "include/piece.h"
+#include "include/spritesheet.h"
 #include <memory>
 #include <raylib.h>
 #include <string>
-
 // TODO: separate out gui representations
 
 // TODO: Test for proper indexing, using this enum as base
@@ -80,80 +81,11 @@ std::string startingFEN =
     "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 
 class Board;
-class Piece;
 class Square;
 class Position;
 // Represents either a physical piece on the board or any comparable
 // game trait, such as castling rights that can be represented as
 // pieces.
-class Piece {
-public:
-  const static unsigned short None = 0, Black = 128, White = 64, Pawn = 1,
-                              Knight = 2, Bishop = 4, Rook = 8, Queen = 16,
-                              King = 32;
-  Piece() {}
-  Piece(int color, int type) { this->flags = color | type; }
-  Piece(int flags) { this->flags = flags; }
-  Piece(char c) {
-    this->flags = Piece::None;
-    if (c <= 'Z' && c >= 'A') {
-      this->flags |= Piece::White;
-    } else if (c <= 'z' && c >= 'a') {
-      this->flags |= Piece::Black;
-    }
-    switch (c) {
-    case 'K':
-    case 'k':
-      this->flags |= Piece::King;
-      break;
-    case 'Q':
-    case 'q':
-      this->flags |= Piece::Queen;
-      break;
-    case 'R':
-    case 'r':
-      this->flags |= Piece::Rook;
-      break;
-    case 'B':
-    case 'b':
-      this->flags |= Piece::Bishop;
-      break;
-    case 'N':
-    case 'n':
-      this->flags |= Piece::Knight;
-      break;
-    case 'P':
-    case 'p':
-      this->flags |= Piece::Pawn;
-      break;
-    default:
-      this->flags = Piece::None;
-      break;
-    }
-  }
-  Piece &setFlags(int flags) {
-    this->flags |= flags;
-    return *this;
-  }
-  Piece &unsetFlags(int flags) {
-    this->flags &= ~flags;
-    return *this;
-  }
-  Piece &operator=(const Piece &other) {
-    this->flags = other.flags;
-    return *this;
-  }
-  bool operator==(const Piece &other) { return this->flags == other.flags; }
-  bool operator==(unsigned int other) { return this->flags == other; }
-  bool operator==(unsigned short other) { return this->flags == other; }
-  bool operator==(int other) { return this->flags == other; }
-  bool operator==(short other) { return this->flags == other; }
-  bool operator!=(const Piece &other) { return this->flags != other.flags; }
-  unsigned int getFlags() { return this->flags; }
-
-private:
-  unsigned int flags;
-};
 // Represents only a physical square on the board, used mainly for display
 // purposes
 class Square {
@@ -215,89 +147,6 @@ private:
   bb king;
 };
 
-class Spritesheet {
-public:
-  Image img;
-  Texture2D tex;
-  Spritesheet(std::string path) {
-    this->img = LoadImage(path.c_str());
-    this->tex = LoadTextureFromImage(this->img);
-  }
-  Spritesheet &draw(Piece &p, float posX, float posY) {
-    int spriteWidth = this->tex.width / 6;
-    int spriteHeight = this->tex.height / 2;
-    Rectangle window = {.width = (float)spriteWidth, .height = (float)53};
-    Vector2 pos = {.x = posX, .y = posY};
-    switch (p.getFlags()) {
-    case Piece::White | Piece::King: {
-      window.x = 0;
-      window.y = 0;
-      break;
-    }
-    case Piece::White | Piece::Queen: {
-      window.x = spriteWidth;
-      window.y = 0;
-      break;
-    }
-    case Piece::White | Piece::Bishop: {
-      window.x = spriteWidth * 2;
-      window.y = 0;
-      break;
-    }
-    case Piece::White | Piece::Knight: {
-      window.x = spriteWidth * 3;
-      window.y = 0;
-      break;
-    }
-    case Piece::White | Piece::Rook: {
-      window.x = spriteWidth * 4;
-      window.y = 0;
-      break;
-    }
-    case Piece::White | Piece::Pawn: {
-      window.x = spriteWidth * 5;
-      window.y = 0;
-      break;
-    }
-    case Piece::Black | Piece::King: {
-      window.x = 0;
-      window.y = spriteHeight;
-      break;
-    }
-    case Piece::Black | Piece::Queen: {
-      window.x = spriteWidth;
-      window.y = spriteHeight;
-      break;
-    }
-    case Piece::Black | Piece::Bishop: {
-      window.x = spriteWidth * 2;
-      window.y = spriteHeight;
-      break;
-    }
-    case Piece::Black | Piece::Knight: {
-      window.x = spriteWidth * 3;
-      window.y = spriteHeight;
-      break;
-    }
-    case Piece::Black | Piece::Rook: {
-      window.x = spriteWidth * 4;
-      window.y = spriteHeight;
-      break;
-    }
-    case Piece::Black | Piece::Pawn: {
-      window.x = spriteWidth * 5;
-      window.y = spriteHeight;
-      break;
-    }
-    default:
-      // early return to not draw if the piece doesn't match a phyisical piece
-      // type
-      return *this;
-    }
-    DrawTextureRec(this->tex, window, pos, WHITE);
-    return *this;
-  }
-};
 class Board {
 public:
   static int index(int rank, int file) { return file + rank * 8; }
