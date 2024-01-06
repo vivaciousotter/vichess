@@ -9,6 +9,7 @@ int main(int argv, char **argc) {
   InitWindow(screenWidth, screenHeight, "chess");
   BoardComponent board;
   Mailbox::Position p;
+  board.applyPostion(p);
   SetTargetFPS(60);
   while (!WindowShouldClose()) {
     BeginDrawing();

@@ -1,4 +1,5 @@
 #include "include/flags.h"
+
 cflags CFlags::fromChar(char c) {
   cflags flags;
   flags = CFlags::Black;
@@ -39,10 +40,29 @@ cflags CFlags::fromChar(char c) {
   }
   return flags;
 }
+
 cflags CFlags::fromString(std::string s) {
   cflags flags = CFlags::None;
   for (int i = 0; i < s.length(); i++) {
-    flags |= CFlags::fromChar(s[i]);
+    flags |= fromChar(s[i]);
   }
   return flags;
 }
+
+cflags CFlags::HasFlags::getFlags() {
+  if (this->flags) {
+    return this->flags;
+  } else {
+    return CFlags::None;
+  }
+}
+
+void CFlags::HasFlags::setFlags(cflags flags) { this->flags |= flags; }
+
+void CFlags::HasFlags::unsetFlags(cflags flags) { this->flags &= ~flags; }
+
+void CFlags::HasFlags::clearFlags() { this->flags = CFlags::None; }
+
+void CFlags::HasFlags::applyMask(cflags mask) { this->flags &= mask; }
+
+void CFlags::HasFlags::replaceFlags(cflags flags) { this->flags = flags; }

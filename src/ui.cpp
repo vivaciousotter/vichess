@@ -12,20 +12,19 @@ BoardComponent::BoardComponent() {
     this->squares[i].color = bw < 0 ? DARKBROWN : BEIGE;
     this->squares[i].file = i % 8;
     this->squares[i].rank = i / 8;
-    if (this->squares[i].rank == 1) {
-      this->squares[i].piece =
-          std::make_unique<PieceComponent>(PieceComponent('P'));
-    }
-    if (this->squares[i].rank == 6) {
-      this->squares[i].piece =
-          std::make_unique<PieceComponent>(PieceComponent('p'));
-    }
     if (i % 8 != 7) {
       bw = -bw;
     }
   }
   this->boundingBox.width = 8 * SquareComponent::size;
   this->boundingBox.height = 8 * SquareComponent::size;
+}
+void BoardComponent::applyPostion(Mailbox::Position &p) {
+  for (int i = 0; i < 64; i++) {
+    if (p.squares[i]) {
+      this->squares[i].piece->replaceFlags(p.squares[i]->getFlags());
+    }
+  }
 }
 void BoardComponent::drawAt(int x, int y) {
   for (int i = 0; i < 64; i++) {
@@ -50,21 +49,21 @@ void SquareComponent::drawAt(int x, int y) {
 }
 
 PieceComponent::PieceComponent() {
-  this->piece = CFlags::None;
+  this->flags = CFlags::None;
   this->tex = LoadTexture("./assets/spritesheet.png");
 }
 PieceComponent::PieceComponent(char c) {
-  this->piece = CFlags::fromChar(c);
+  this->flags = CFlags::fromChar(c);
   this->tex = LoadTexture("./assets/spritesheet.png");
 }
-void PieceComponent::setPiece(char c) { this->piece = CFlags::fromChar(c); }
+void PieceComponent::setPiece(char c) { this->flags = CFlags::fromChar(c); }
 void PieceComponent::drawAt(int x, int y) {
   int spriteWidth = this->tex.width / 6;
   int spriteHeight = this->tex.height / 2;
   Rectangle window;
   window.width = (float)spriteWidth;
   window.height = (float)spriteHeight;
-  switch (this->piece) {
+  switch (this->flags) {
   case CFlags::White | CFlags::King: {
     window.x = 0;
     window.y = 0;

@@ -1,27 +1,49 @@
 #ifndef CHESS_POSITION_H
 #define CHESS_POSITION_H
 #include "flags.h"
+#include <array>
 #include <cstdint>
+#include <memory>
+class Piece : public CFlags::HasFlags {
+public:
+  using enum CFlags::CFlags;
+  Piece(char c);
+  Piece(cflags flags);
+  int square;
+};
 
-class Piece {
-  using enum CFlags::CFflags;
+class Player : public CFlags::HasFlags {
+public:
+  static const cflags White = CFlags::White, Black = CFlags::Black,
+                      Mask = CFlags::Black | CFlags::White, None = CFlags::None;
+  Player(cflags flags);
+};
+
+class CastlingRights : public CFlags::HasFlags {
+public:
+  CastlingRights(Player p);
+  CastlingRights(cflags p);
+  static const cflags King = CFlags::King, Queen = CFlags::Queen,
+                      None = CFlags::None, Mask = CFlags::King | CFlags::Queen;
+  Player player;
 };
 
 // namespaced enum so it coerces to an int for easy indexing
 namespace Square {
 enum {
   // clang-format off
-  a8, a7, a6, a5, a4, a3, a2, a1,
-  b8, b7, b6, b5, b4, b3, b2, b1,
-  c8, c7, c6, c5, c4, c3, c2, c1,
-  d8, d7, d6, d5, d4, d3, d2, d1,
-  e8, e7, e6, e5, e4, e3, e2, e1,
-  f8, f7, f6, f5, f4, f3, f2, f1,
-  g8, g7, g6, g5, g4, g3, g2, g1,
-  h8, h7, h6, h5, h4, h3, h2, h1
+  a8, b8, c8, d8, e8, f8, g8, h8,
+  a7, b7, c7, d7, e7, f7, g7, h7,
+  a6, b6, c6, d6, e6, f6, g6, h6,
+  a5, b5, c5, d5, e5, f5, g5, h5,
+  a4, b4, c4, d4, e4, f4, g4, h4,
+  a3, b3, c3, d3, e3, f3, g3, h3,
+  a2, b2, c2, d2, e2, f2, g2, h2,
+  a1, b1, c1, d1, e1, f1, g1, h1,
   // clang-format on
 };
-}
+std::string fromInt(int i);
+} // namespace Square
 // namespace for precomputed bitboards and helper function
 namespace BitBoard {
 typedef uint64_t bb;
@@ -59,7 +81,7 @@ const bb squares[64] = {
   ranks[7]&files[0], ranks[7]&files[1], ranks[7]&files[2], ranks[7]&files[3], ranks[7]&files[4], ranks[7]&files[5], ranks[7]&files[6], ranks[7]&files[7]
 };
 class Position {
-public:
+private:
   bb pawns, knights, bishops, rooks, queens, kings, white, black;
 };
 // clang-format on
@@ -67,7 +89,16 @@ public:
 
 namespace Mailbox {
 class Position {
+public:
+  Position();
+  std::array<std::unique_ptr<Piece>, 64> squares;
+
 private:
+  CastlingRights whiteCastle;
+  CastlingRights blackCastle;
+  Player toMove;
+  int halfmove;
+  int fullmove;
 };
 } // namespace Mailbox
 

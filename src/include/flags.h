@@ -5,7 +5,7 @@ typedef unsigned int cflags;
 
 // name
 namespace CFlags {
-enum CFflags : cflags {
+enum CFlags : cflags {
   None = 0,
   Pawn = 1,
   Knight = 1 << 1,
@@ -18,6 +18,18 @@ enum CFflags : cflags {
 };
 cflags fromChar(char c);
 cflags fromString(std::string s);
+class HasFlags {
+protected:
+  cflags flags;
+
+public:
+  cflags getFlags();
+  void replaceFlags(cflags flags);
+  void setFlags(cflags flags);
+  void unsetFlags(cflags flags);
+  void clearFlags();
+  void applyMask(cflags mask);
+};
 } // namespace CFlags
 
 #endif

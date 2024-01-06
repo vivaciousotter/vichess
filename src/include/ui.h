@@ -1,6 +1,7 @@
 #ifndef CHESS_UI_H
 #define CHESS_UI_H
 #include "flags.h"
+#include "position.h"
 #include <memory>
 #include <raylib.h>
 
@@ -12,9 +13,8 @@ public:
   Rectangle boundingBox;
 };
 
-class PieceComponent : public Component {
+class PieceComponent : public Component, public CFlags::HasFlags {
 public:
-  cflags piece;
   PieceComponent();
   PieceComponent(char c);
   PieceComponent(cflags piece);
@@ -38,6 +38,7 @@ public:
   BoardComponent();
   SquareComponent &operator[](int i);
   void drawAt(int x, int y);
+  void applyPostion(Mailbox::Position &p);
 
 private:
   SquareComponent squares[64];
