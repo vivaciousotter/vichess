@@ -1,5 +1,5 @@
 #include "include/position.h"
-#include "include/flags.h"
+
 std::string Square::fromInt(int i) {
   using namespace Square;
   switch (i) {
@@ -135,45 +135,33 @@ std::string Square::fromInt(int i) {
   return "";
 }
 
-Player::Player(cflags p) {
-  this->flags = p;
-  this->applyMask(this->Mask);
-}
-
-CastlingRights::CastlingRights(cflags p) : player(p) {}
-
-Piece::Piece(char c) { this->flags = CFlags::fromChar(c); }
-Piece::Piece(cflags flags) { this->flags = flags; }
-
-Mailbox::Position::Position()
-    : toMove(Player::White), whiteCastle(Player::White),
-      blackCastle(Player::Black) {
-  for (int i = 0; i < this->squares.size(); i++) {
-    this->squares[i] = std::make_unique<Piece>(Piece(Piece::None));
+Position::Position() {
+  for (int i = 0; i < 64; i++) {
+    this->squares[i] = Piece::None;
     if (i == Square::a8 || i == Square::h8) {
-      this->squares[i]->setFlags(Piece::Black | Piece::Rook);
+      this->squares[i] = (Piece::Black | Piece::Rook);
     } else if (i == Square::b8 || i == Square::g8) {
-      this->squares[i]->setFlags(Piece::Black | Piece::Knight);
+      this->squares[i] = (Piece::Black | Piece::Knight);
     } else if (i == Square::c8 || i == Square::f8) {
-      this->squares[i]->setFlags(Piece::Black | Piece::Bishop);
+      this->squares[i] = (Piece::Black | Piece::Bishop);
     } else if (i == Square::d8) {
-      this->squares[i]->setFlags(Piece::Black | Piece::Queen);
+      this->squares[i] = (Piece::Black | Piece::Queen);
     } else if (i == Square::e8) {
-      this->squares[i]->setFlags(Piece::Black | Piece::King);
+      this->squares[i] = (Piece::Black | Piece::King);
     } else if (i > Square::h8 && i < Square::a6) {
-      this->squares[i]->setFlags(Piece::Black | Piece::Pawn);
+      this->squares[i] = (Piece::Black | Piece::Pawn);
     } else if (i == Square::a1 || i == Square::h1) {
-      this->squares[i]->setFlags(Piece::White | Piece::Rook);
+      this->squares[i] = (Piece::White | Piece::Rook);
     } else if (i == Square::b1 || i == Square::g1) {
-      this->squares[i]->setFlags(Piece::White | Piece::Knight);
+      this->squares[i] = (Piece::White | Piece::Knight);
     } else if (i == Square::c1 || i == Square::f1) {
-      this->squares[i]->setFlags(Piece::White | Piece::Bishop);
+      this->squares[i] = (Piece::White | Piece::Bishop);
     } else if (i == Square::d1) {
-      this->squares[i]->setFlags(Piece::White | Piece::Queen);
+      this->squares[i] = (Piece::White | Piece::Queen);
     } else if (i == Square::e1) {
-      this->squares[i]->setFlags(Piece::White | Piece::King);
+      this->squares[i] = (Piece::White | Piece::King);
     } else if (i > Square::h3 && i < Square::a1) {
-      this->squares[i]->setFlags(Piece::White | Piece::Pawn);
+      this->squares[i] = (Piece::White | Piece::Pawn);
     }
   }
 };

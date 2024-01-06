@@ -4,12 +4,14 @@
 // TODO: separate out gui representations
 
 int main(int argv, char **argc) {
-  const int screenWidth = 8 * SquareComponent::size;
-  const int screenHeight = 8 * SquareComponent::size;
+  const int screenWidth = 8 * UI::Square::size;
+  const int screenHeight = 8 * UI::Square::size;
   InitWindow(screenWidth, screenHeight, "chess");
-  BoardComponent board;
-  Mailbox::Position p;
-  board.applyPostion(p);
+  UI::Board board;
+  Position p;
+  for (int i = 0; i < 64; i++) {
+    board.squares[i].piece = p.squares[i];
+  }
   SetTargetFPS(60);
   while (!WindowShouldClose()) {
     BeginDrawing();

@@ -4,29 +4,14 @@
 #include <array>
 #include <cstdint>
 #include <memory>
-class Piece : public CFlags::HasFlags {
-public:
-  using enum CFlags::CFlags;
-  Piece(char c);
-  Piece(cflags flags);
-  int square;
-};
 
-class Player : public CFlags::HasFlags {
-public:
-  static const cflags White = CFlags::White, Black = CFlags::Black,
-                      Mask = CFlags::Black | CFlags::White, None = CFlags::None;
-  Player(cflags flags);
-};
+namespace Piece {
+using enum CFlags::CFlags;
+}
 
-class CastlingRights : public CFlags::HasFlags {
-public:
-  CastlingRights(Player p);
-  CastlingRights(cflags p);
-  static const cflags King = CFlags::King, Queen = CFlags::Queen,
-                      None = CFlags::None, Mask = CFlags::King | CFlags::Queen;
-  Player player;
-};
+namespace Player {
+enum { White = CFlags::White, Black = CFlags::Black };
+}
 
 // namespaced enum so it coerces to an int for easy indexing
 namespace Square {
@@ -44,6 +29,7 @@ enum {
 };
 std::string fromInt(int i);
 } // namespace Square
+
 // namespace for precomputed bitboards and helper function
 namespace BitBoard {
 typedef uint64_t bb;
@@ -80,26 +66,20 @@ const bb squares[64] = {
   ranks[6]&files[0], ranks[6]&files[1], ranks[6]&files[2], ranks[6]&files[3], ranks[6]&files[4], ranks[6]&files[5], ranks[6]&files[6], ranks[6]&files[7],
   ranks[7]&files[0], ranks[7]&files[1], ranks[7]&files[2], ranks[7]&files[3], ranks[7]&files[4], ranks[7]&files[5], ranks[7]&files[6], ranks[7]&files[7]
 };
-class Position {
-private:
-  bb pawns, knights, bishops, rooks, queens, kings, white, black;
-};
 // clang-format on
 } // namespace BitBoard
 
-namespace Mailbox {
 class Position {
 public:
   Position();
-  std::array<std::unique_ptr<Piece>, 64> squares;
+  cflags squares[64];
 
 private:
-  CastlingRights whiteCastle;
-  CastlingRights blackCastle;
-  Player toMove;
+  cflags whiteCastle;
+  cflags blackCastle;
+  cflags toMove;
   int halfmove;
   int fullmove;
 };
-} // namespace Mailbox
 
 #endif

@@ -4,43 +4,23 @@
 #include "position.h"
 #include <memory>
 #include <raylib.h>
-
-class Component {
+namespace UI {
+class Square {
 public:
-  virtual void draw();
-  virtual void drawAt(int x, int y);
-  virtual void drawAt(Vector2 loc);
-  Rectangle boundingBox;
+  static const int size = 64;
+  Color color;
+  int rank;
+  int file;
+  cflags piece;
 };
-
-class PieceComponent : public Component, public CFlags::HasFlags {
+class Board {
 public:
-  PieceComponent();
-  PieceComponent(char c);
-  PieceComponent(cflags piece);
-  void setPiece(char c);
+  Board();
   void drawAt(int x, int y);
+  std::array<Square, 64> squares;
 
 private:
   Texture2D tex;
 };
-class SquareComponent : public Component {
-public:
-  const static int size = 64;
-  std::unique_ptr<PieceComponent> piece;
-  void drawAt(int x, int y);
-  Color color;
-  int rank;
-  int file;
-};
-class BoardComponent : public Component {
-public:
-  BoardComponent();
-  SquareComponent &operator[](int i);
-  void drawAt(int x, int y);
-  void applyPostion(Mailbox::Position &p);
-
-private:
-  SquareComponent squares[64];
-};
+} // namespace UI
 #endif
