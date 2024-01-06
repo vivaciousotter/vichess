@@ -5,7 +5,7 @@ typedef unsigned int cflags;
 
 // name
 namespace CFlags {
-enum : cflags {
+enum CFflags : cflags {
   None = 0,
   Pawn = 1,
   Knight = 1 << 1,

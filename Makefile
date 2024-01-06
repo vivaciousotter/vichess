@@ -1,6 +1,7 @@
 RAYLIB_LIBS := raylib GL m pthread dl rt X11 
 BUILD_DIR := ./build
 BUILD_TARGET := $(BUILD_DIR)/chess
+CXXFLAGS := -std=c++20
 SRC_DIRS := ./src
 #find all .cpp files
 SRCS := $(shell find $(SRC_DIRS) -name '*.cpp')

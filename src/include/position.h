@@ -1,6 +1,12 @@
 #ifndef CHESS_POSITION_H
 #define CHESS_POSITION_H
+#include "flags.h"
 #include <cstdint>
+
+class Piece {
+  using enum CFlags::CFflags;
+};
+
 // namespaced enum so it coerces to an int for easy indexing
 namespace Square {
 enum {
@@ -16,7 +22,7 @@ enum {
   // clang-format on
 };
 }
-// namespace for precomputed bitboards
+// namespace for precomputed bitboards and helper function
 namespace BitBoard {
 typedef uint64_t bb;
 const bb aRank = 0xFF00000000000000;
@@ -52,7 +58,17 @@ const bb squares[64] = {
   ranks[6]&files[0], ranks[6]&files[1], ranks[6]&files[2], ranks[6]&files[3], ranks[6]&files[4], ranks[6]&files[5], ranks[6]&files[6], ranks[6]&files[7],
   ranks[7]&files[0], ranks[7]&files[1], ranks[7]&files[2], ranks[7]&files[3], ranks[7]&files[4], ranks[7]&files[5], ranks[7]&files[6], ranks[7]&files[7]
 };
+class Position {
+public:
+  bb pawns, knights, bishops, rooks, queens, kings, white, black;
+};
 // clang-format on
 } // namespace BitBoard
+
+namespace Mailbox {
+class Position {
+private:
+};
+} // namespace Mailbox
 
 #endif
