@@ -3,12 +3,12 @@
 
 UI::Board::Board() {
   int bw = -1;
+  this->tex = LoadTexture("./assets/spritesheet.png");
   for (int i = 0; i < 64; i++) {
     this->squares[i].color = bw < 0 ? DARKBROWN : BEIGE;
     this->squares[i].file = i % 8;
     this->squares[i].rank = i / 8;
     this->squares[i].piece = CFlags::None;
-    this->tex = LoadTexture("./assets/spritesheet.png");
     if (i % 8 != 7) {
       bw = -bw;
     }
@@ -20,6 +20,11 @@ void UI::Board::drawAt(int x, int y) {
                    (float)((this->squares[i].rank * UI::Square::size) + y)};
     DrawRectangleV(loc, {(float)UI::Square::size, (float)UI::Square::size},
                    this->squares[i].color);
+    if (i == this->selectedSquare) {
+      DrawRectangleLinesEx(
+          (Rectangle){loc.x, loc.y, UI::Square::size, UI::Square::size}, 10,
+          RED);
+    }
     if (this->squares[i].piece != CFlags::None) {
       int spriteWidth = this->tex.width / 6;
       int spriteHeight = this->tex.height / 2;

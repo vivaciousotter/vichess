@@ -1,7 +1,6 @@
 #include "include/position.h"
 #include "include/ui.h"
 #include <raylib.h>
-// TODO: separate out gui representations
 
 int main(int argv, char **argc) {
   const int screenWidth = 8 * UI::Square::size;
@@ -14,10 +13,17 @@ int main(int argv, char **argc) {
   }
   SetTargetFPS(60);
   while (!WindowShouldClose()) {
+
     BeginDrawing();
     {
       ClearBackground(RAYWHITE);
       board.drawAt(0, 0);
+      if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+        int file = GetMouseX() / UI::Square::size;
+        int rank = GetMouseY() / UI::Square::size;
+        if (file < 8 && rank < 8)
+          board.selectedSquare = file + (rank * 8);
+      }
     }
     EndDrawing();
   }

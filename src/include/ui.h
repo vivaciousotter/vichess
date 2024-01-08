@@ -18,6 +18,7 @@ public:
   Board();
   void drawAt(int x, int y);
   std::array<Square, 64> squares;
+  int selectedSquare;
 
 private:
   Texture2D tex;
